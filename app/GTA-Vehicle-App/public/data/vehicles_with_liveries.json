@@ -1,0 +1,338 @@
+{
+  "metadata": {
+    "title": "GTA Online Vehicles with Livery Options",
+    "description": "Complete set of vehicles in GTA Online that support livery customization",
+    "last_updated": "2024-01-13",
+    "total_vehicles": 42
+  },
+  "vehicles": [
+    {
+      "gta_make": "Vapid",
+      "gta_model": "Dominator ASP",
+      "class": "Muscle",
+      "livery_count": "Multiple",
+      "special_liveries": ["Racing liveries", "Custom designs"],
+      "notes": "285 different modifications available, one of the most customizable cars"
+    },
+    {
+      "gta_make": "Maibatsu",
+      "gta_model": "Penumbra FF",
+      "class": "Sports",
+      "livery_count": "Multiple",
+      "special_liveries": ["Princess Robot Bubblegum", "Racing liveries"],
+      "notes": "Extensive customization options including anime-style liveries"
+    },
+    {
+      "gta_make": "Bravado",
+      "gta_model": "Banshee",
+      "class": "Sports",
+      "livery_count": "16",
+      "special_liveries": ["HSW livery available"],
+      "notes": "Available in standard and topless forms, 16 different liveries plus HSW livery"
+    },
+    {
+      "gta_make": "Übermacht",
+      "gta_model": "Sentinel Classic",
+      "class": "Sports",
+      "livery_count": "10",
+      "special_liveries": ["Rally liveries"],
+      "notes": "Rally coupe based on BMW E30 M3, 10 livery styles available"
+    },
+    {
+      "gta_make": "Übermacht",
+      "gta_model": "Sentinel Classic Widebody",
+      "class": "Sports",
+      "livery_count": "Multiple",
+      "special_liveries": ["Racing liveries"],
+      "notes": "Widebody variant with additional livery options"
+    },
+    {
+      "gta_make": "Dinka",
+      "gta_model": "Sugoi",
+      "class": "Sports",
+      "livery_count": "Multiple",
+      "special_liveries": ["Wasabi Kitty anime livery", "Racing liveries"],
+      "notes": "Inspired by Honda Civic Type R, features attractive racing liveries"
+    },
+    {
+      "gta_make": "Pfister",
+      "gta_model": "Comet Safari",
+      "class": "Sports",
+      "livery_count": "Multiple",
+      "special_liveries": ["Galaxy livery"],
+      "notes": "Unique liveries including the Galaxy livery"
+    },
+    {
+      "gta_make": "Benefactor",
+      "gta_model": "Schlagen GT",
+      "class": "Sports",
+      "livery_count": "Multiple",
+      "special_liveries": ["Racing liveries"],
+      "notes": "Over 80 customization choices including various liveries"
+    },
+    {
+      "gta_make": "Progen",
+      "gta_model": "Itali GTB Custom",
+      "class": "Super",
+      "livery_count": "Multiple",
+      "special_liveries": ["Racing-themed liveries"],
+      "notes": "Upgraded at Benny's Original Motorworks, offers racing-themed liveries"
+    },
+    {
+      "gta_make": "Declasse",
+      "gta_model": "Hotring Sabre",
+      "class": "Sports",
+      "livery_count": "Multiple",
+      "special_liveries": ["Sprunk livery", "eCola livery"],
+      "notes": "Racecar with select liveries for both Sprunk and eCola"
+    },
+    {
+      "gta_make": "Pegassi",
+      "gta_model": "Bati 801RR",
+      "class": "Motorcycles",
+      "livery_count": "Multiple",
+      "special_liveries": ["Free Sprunk livery"],
+      "notes": "Affordable motorcycle featuring a free Sprunk livery"
+    },
+    {
+      "gta_make": "Overflod",
+      "gta_model": "Imorgon",
+      "class": "Sports",
+      "livery_count": "Multiple",
+      "special_liveries": ["Sprunk livery"],
+      "notes": "Electric vehicle that offers a Sprunk livery"
+    },
+    {
+      "gta_make": "Annis",
+      "gta_model": "S80RR",
+      "class": "Super",
+      "livery_count": "Multiple",
+      "special_liveries": ["Exclusive eCola livery"],
+      "notes": "Exclusive eCola livery unlocked by crew members who completed all six casino missions"
+    },
+    {
+      "gta_make": "Vapid",
+      "gta_model": "Clique",
+      "class": "Muscle",
+      "livery_count": "Multiple",
+      "special_liveries": ["Exclusive Merry Cliquemas livery"],
+      "notes": "Exclusive Merry Cliquemas livery unlocked for players who logged in on December 25, 2018"
+    },
+    {
+      "gta_make": "Ocelot",
+      "gta_model": "Swinger",
+      "class": "Sports Classics",
+      "livery_count": "Multiple",
+      "special_liveries": ["For Queen and Country livery"],
+      "notes": "For Queen and Country livery unlocked for Guest List members between July 24-30, 2018"
+    },
+    {
+      "gta_make": "Pegassi",
+      "gta_model": "Torero XO",
+      "class": "Super",
+      "livery_count": "Multiple",
+      "special_liveries": ["Multiple livery options"],
+      "notes": "Supercar with multiple livery options"
+    },
+    {
+      "gta_make": "Lampadati",
+      "gta_model": "Corsita",
+      "class": "Sports",
+      "livery_count": "Multiple",
+      "special_liveries": ["Various liveries"],
+      "notes": "Sports car offering various liveries"
+    },
+    {
+      "gta_make": "Benefactor",
+      "gta_model": "LM87",
+      "class": "Super",
+      "livery_count": "Multiple",
+      "special_liveries": ["Selection of liveries"],
+      "notes": "Vehicle with a selection of liveries"
+    },
+    {
+      "gta_make": "Obey",
+      "gta_model": "Omnis e-GT",
+      "class": "Sports",
+      "livery_count": "Multiple",
+      "special_liveries": ["Multiple livery choices"],
+      "notes": "Car featuring multiple livery choices"
+    },
+    {
+      "gta_make": "Bravado",
+      "gta_model": "Greenwood",
+      "class": "Muscle",
+      "livery_count": "Multiple",
+      "special_liveries": ["Various livery options"],
+      "notes": "Vehicle with various livery options"
+    },
+    {
+      "gta_make": "Annis",
+      "gta_model": "ZR350",
+      "class": "Sports",
+      "livery_count": "Multiple",
+      "special_liveries": ["Unique liveries"],
+      "notes": "Throwback to GTA: San Andreas, boasts unique liveries"
+    },
+    {
+      "gta_make": "Bravado",
+      "gta_model": "Gauntlet Classic Custom",
+      "class": "Muscle",
+      "livery_count": "Multiple",
+      "special_liveries": ["Wide range of customization"],
+      "notes": "Muscle car with wide range of customization options"
+    },
+    {
+      "gta_make": "Weeny",
+      "gta_model": "Dynasty",
+      "class": "Compacts",
+      "livery_count": "Multiple",
+      "special_liveries": ["Over 80 customization options"],
+      "notes": "Vintage sedan offering over 80 customization options including various liveries"
+    },
+    {
+      "gta_make": "Übermacht",
+      "gta_model": "Rebla GTS",
+      "class": "SUVs",
+      "livery_count": "Multiple",
+      "special_liveries": ["Range of customization options"],
+      "notes": "SUV that offers range of customization options including liveries"
+    },
+    {
+      "gta_make": "Declasse",
+      "gta_model": "Tampa GT",
+      "class": "Muscle",
+      "livery_count": "Multiple",
+      "special_liveries": ["Smoke on the Water livery"],
+      "notes": "Muscle car with raw acceleration, features special Smoke on the Water livery"
+    },
+    {
+      "gta_make": "Brute",
+      "gta_model": "Pony",
+      "class": "Vans",
+      "livery_count": "Multiple",
+      "special_liveries": ["Smoke on the Water livery"],
+      "notes": "Collectible vehicle complete with special Smoke on the Water livery"
+    },
+    {
+      "gta_make": "Declasse",
+      "gta_model": "Drift Walton L35",
+      "class": "Off-Road",
+      "livery_count": "Multiple",
+      "special_liveries": ["Painted n' Shaded drift livery"],
+      "notes": "Drift vehicle introduced with the Painted n' Shaded drift livery"
+    },
+    {
+      "gta_make": "Bravado",
+      "gta_model": "Gauntlet Hellfire",
+      "class": "Muscle",
+      "livery_count": "Multiple",
+      "special_liveries": ["Drift Tuning liveries"],
+      "notes": "Muscle car supporting Drift Tuning Upgrades and liveries"
+    },
+    {
+      "gta_make": "Annis",
+      "gta_model": "Hardy",
+      "class": "Sports",
+      "livery_count": "Multiple",
+      "special_liveries": ["Drift Tuning liveries"],
+      "notes": "Vehicle with Drift Tuning Upgrades and livery options"
+    },
+    {
+      "gta_make": "Vapid",
+      "gta_model": "Dominator FX",
+      "class": "Muscle",
+      "livery_count": "Multiple",
+      "special_liveries": ["Drift Tuning liveries"],
+      "notes": "Car featuring Drift Tuning Upgrades and liveries"
+    },
+    {
+      "gta_make": "Dinka",
+      "gta_model": "Chavos V6",
+      "class": "Sports",
+      "livery_count": "Multiple",
+      "special_liveries": ["Drift Tuning liveries"],
+      "notes": "Vehicle with Drift Tuning Upgrades and livery options"
+    },
+    {
+      "gta_make": "RUNE",
+      "gta_model": "Cheburek",
+      "class": "Sports Classics",
+      "livery_count": "Multiple",
+      "special_liveries": ["Painted n' Shaded drift livery"],
+      "notes": "Can be customized with Painted n' Shaded drift livery upon completing a Drift Race"
+    },
+    {
+      "gta_make": "Dinka",
+      "gta_model": "Jester RR",
+      "class": "Sports",
+      "livery_count": "Multiple",
+      "special_liveries": ["Drift Gorilla Green drift livery"],
+      "notes": "Eligible for Drift Gorilla Green drift livery after completing a Drift Race"
+    },
+    {
+      "gta_make": "TM-02",
+      "gta_model": "Khanjali Tank",
+      "class": "Military",
+      "livery_count": "Multiple",
+      "special_liveries": ["Galaxy livery"],
+      "notes": "Weaponized vehicle that can be customized with Galaxy livery"
+    },
+    {
+      "gta_make": "Mammoth",
+      "gta_model": "Avenger",
+      "class": "Planes",
+      "livery_count": "Multiple",
+      "special_liveries": ["Galaxy livery"],
+      "notes": "Weaponized vehicle that can be customized with Galaxy livery"
+    },
+    {
+      "gta_make": "Mammoth",
+      "gta_model": "Thruster",
+      "class": "Military",
+      "livery_count": "Multiple",
+      "special_liveries": ["Galaxy livery"],
+      "notes": "Weaponized vehicle that can be customized with Galaxy livery"
+    },
+    {
+      "gta_make": "Ocelot",
+      "gta_model": "Ardent",
+      "class": "Sports Classics",
+      "livery_count": "Multiple",
+      "special_liveries": ["Galaxy livery"],
+      "notes": "Weaponized vehicle that can be customized with Galaxy livery"
+    },
+    {
+      "gta_make": "Declasse",
+      "gta_model": "Weaponized Tampa",
+      "class": "Muscle",
+      "livery_count": "Multiple",
+      "special_liveries": ["Galaxy livery"],
+      "notes": "Weaponized vehicle that can be customized with Galaxy livery"
+    },
+    {
+      "gta_make": "HVY",
+      "gta_model": "Nightshark",
+      "class": "Off-Road",
+      "livery_count": "Multiple",
+      "special_liveries": ["Galaxy livery"],
+      "notes": "Weaponized vehicle that can be customized with Galaxy livery"
+    },
+    {
+      "gta_make": "HVY",
+      "gta_model": "Insurgent",
+      "class": "Off-Road",
+      "livery_count": "Multiple",
+      "special_liveries": ["Galaxy livery"],
+      "notes": "Weaponized vehicle that can be customized with Galaxy livery"
+    },
+    {
+      "gta_make": "HVY",
+      "gta_model": "Insurgent Pick-up Custom",
+      "class": "Off-Road",
+      "livery_count": "Multiple",
+      "special_liveries": ["Galaxy livery"],
+      "notes": "Weaponized vehicle that can be customized with Galaxy livery"
+    }
+  ]
+}

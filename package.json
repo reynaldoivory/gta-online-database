@@ -1,0 +1,19 @@
+{
+  "name": "gta-online-database",
+  "version": "1.0.0",
+  "private": true,
+  "description": "GTA Online Vehicle Equivalencies Database",
+  "scripts": {
+    "dev": "cd app/GTA-Vehicle-App && npm run dev",
+    "build": "cd app/GTA-Vehicle-App && npm run build",
+    "preview": "cd app/GTA-Vehicle-App && npm run preview",
+    "install:app": "cd app/GTA-Vehicle-App && npm install"
+  },
+  "keywords": [
+    "gta",
+    "vehicle",
+    "database"
+  ],
+  "author": "",
+  "license": "ISC"
+}

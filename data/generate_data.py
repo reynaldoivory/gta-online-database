@@ -1,0 +1,93 @@
+from pathlib import Path
+
+data = """ID,Make,Model,Class,Real_World,Price,Top_Speed_MPH,Acceleration,Handling,Drivetrain,Shop,HSW,Imani,Weaponized,Tags,Notes
+1,Truffade,Adder,Super,Bugatti Veyron,1000000,250,8.5,7.2,AWD,Legendary,No,No,No,Hypercar,Classic supercar from original heists era
+2,Pegassi,Zentorno,Super,Lamborghini Sesto Elemento,725000,245,8.8,7.5,RWD,Legendary,No,No,No,Hypercar,Fan favorite with great traction
+3,Progen,T20,Super,McLaren P1,2200000,240,9.0,7.8,RWD,Legendary,No,No,No,Hypercar,One of the best all-around supers
+4,Overflod,Entity XF,Super,Koenigsegg Agera,795000,240,8.6,7.4,RWD,Legendary,No,No,No,Hypercar,Excellent high-speed stability
+5,Grotti,Turismo R,Super,Ferrari LaFerrari,500000,238,8.4,7.6,RWD,Legendary,No,No,No,Hypercar,Good starter super car
+6,Pegassi,Osiris,Super,Pagani Huayra,1950000,237,8.7,7.3,RWD,Legendary,No,No,No,Hypercar,Great for stunt races
+7,Bravado,Banshee 900R,Super,Dodge Viper,565000,235,8.9,6.8,RWD,Benny's,No,No,No,Tuner;Benny,Benny's upgraded Banshee
+8,Pfister,Comet,Sports,Porsche 911,100000,220,8.2,7.8,RWD,Legendary,No,No,No,Classic,Iconic sports car
+9,Annis,Elegy RH8,Sports,Nissan GT-R,0,218,8.5,8.0,AWD,Legendary,No,No,No,JDM;Free,Free with Social Club
+10,Dinka,Jester,Sports,Honda NSX,240000,215,8.3,7.9,RWD,Legendary,Yes,No,No,JDM;HSW,HSW upgrade available
+11,Dewbauchee,Massacro,Sports,Aston Martin Vanquish,275000,212,8.4,7.7,RWD,Legendary,No,No,No,British,Great handling sports car
+12,Benefactor,Feltzer,Sports,Mercedes SLS AMG,145000,210,8.1,7.5,RWD,Legendary,No,No,No,German,Gullwing doors
+13,Grotti,Carbonizzare,Sports,Ferrari California,195000,208,8.0,7.6,RWD,Legendary,No,No,No,Italian,Convertible option
+14,Dewbauchee,Rapid GT,Sports,Aston Martin V8 Vantage,132000,205,7.8,7.4,RWD,Legendary,No,No,No,British,Classic British styling
+15,Benefactor,Schwartzer,Sedans,Mercedes C-Class,80000,180,7.2,7.0,RWD,Legendary,No,No,No,German;Luxury,Luxury sedan
+16,Obey,Tailgater,Sedans,Audi A6,55000,175,7.0,6.8,AWD,Legendary,No,No,No,German;Luxury,Executive sedan
+17,Ubermacht,Oracle,Sedans,BMW 7 Series,80000,172,6.8,6.5,RWD,Legendary,No,No,No,German;Luxury,VIP transport
+18,Dewbauchee,Exemplar,Coupes,Aston Martin Rapide,205000,195,7.5,7.2,RWD,Legendary,No,No,No,British;Luxury,Four-door coupe
+19,Ocelot,Jackal,Coupes,Jaguar XK,60000,190,7.3,7.0,RWD,Legendary,No,No,No,British,Sleek coupe design
+20,Ubermacht,Zion,Coupes,BMW 6 Series,65000,185,7.1,6.9,RWD,Legendary,No,No,No,German,Stylish coupe
+21,Gallivanter,Baller,SUVs,Range Rover,90000,160,6.5,6.0,AWD,Legendary,No,Yes,No,Luxury;IMANI,Imani Tech available
+22,Albany,Cavalcade,SUVs,Cadillac Escalade,60000,155,6.2,5.8,AWD,Legendary,No,Yes,No,American;IMANI,Armored option
+23,Enus,Huntley S,SUVs,Bentley Bentayga,195000,158,6.4,6.2,AWD,Legendary,No,No,No,British;Luxury,Ultra luxury SUV
+24,Vapid,Sandking XL,Off-Road,Ford F-250,45000,140,5.8,5.5,4WD,SSASA,No,No,No,Truck;Lifted,Monster truck style
+25,Canis,Bodhi,Off-Road,Jeep CJ,25000,130,5.5,5.0,4WD,SSASA,No,No,No,Classic;Rustic,Trevor's truck
+26,Pegassi,Bati 801,Motorcycles,Ducati 848,15000,230,9.5,8.5,RWD,Legendary,No,No,No,Sport Bike,Best value motorcycle
+27,Dinka,Akuma,Motorcycles,Honda CBR,9000,225,9.8,8.0,RWD,Legendary,No,No,No,Sport Bike,Fastest acceleration bike
+28,Shitzu,Hakuchou,Motorcycles,Suzuki Hayabusa,82000,228,9.2,7.8,RWD,Legendary,No,No,No,Sport Bike,Top speed demon
+29,Dinka,Double T,Motorcycles,Honda CBR600,12000,220,9.0,7.5,RWD,Legendary,No,No,No,Sport Bike,Balanced performer
+30,Pegassi,Ruffian,Motorcycles,Ducati Monster,9000,195,8.5,7.0,RWD,Legendary,No,No,No,Naked Bike,Street fighter style
+31,Benefactor,Dubsta,SUVs,Mercedes G-Wagon,110000,165,6.6,6.3,AWD,Legendary,No,No,No,German;Luxury,Iconic SUV
+32,Canis,Mesa,Off-Road,Jeep Wrangler,35000,135,5.6,5.2,4WD,SSASA,No,No,No,Off-Road,Military variant available
+33,Karin,Sultan,Sports,Subaru Impreza WRX,12000,200,8.0,7.8,AWD,Street,No,No,No,JDM;Rally,Rally legend
+34,Karin,Futo,Sports,Toyota AE86,9000,175,7.5,8.2,RWD,Street,No,No,No,JDM;Drift,Drift king
+35,Maibatsu,Penumbra,Sports,Mitsubishi Eclipse,24000,180,7.6,7.4,FWD,Street,No,No,No,JDM;Tuner,Fast and Furious vibes
+36,Bravado,Buffalo,Muscle,Dodge Charger,96000,195,7.8,6.5,RWD,Legendary,No,Yes,No,American;IMANI,STX variant with Imani
+37,Vapid,Dominator,Muscle,Ford Mustang,35000,200,7.5,6.2,RWD,Legendary,No,No,No,American;Pony,Classic pony car
+38,Bravado,Gauntlet,Muscle,Dodge Challenger,32000,198,7.6,6.4,RWD,Legendary,No,No,No,American;Muscle,Modern muscle
+39,Declasse,Sabre Turbo,Muscle,Chevrolet Chevelle,15000,190,7.2,6.0,RWD,Street,No,No,No,Classic;Lowrider,Benny's lowrider option
+40,Declasse,Vigero,Muscle,Chevrolet Camaro,21000,185,7.0,5.8,RWD,Street,No,No,No,Classic,First gen Camaro style
+41,Imponte,Phoenix,Muscle,Pontiac Firebird,15000,188,7.3,6.1,RWD,Street,No,No,No,Classic,Trans Am inspiration
+42,Imponte,Ruiner,Muscle,Pontiac Trans Am,10000,192,7.4,6.3,RWD,Street,No,No,No,Classic;Weaponized,Ruiner 2000 is weaponized
+43,Invetero,Coquette,Sports Classic,Chevrolet Corvette C7,138000,205,8.0,7.5,RWD,Legendary,No,No,No,American,Modern classic
+44,Grotti,Stinger GT,Sports Classic,Ferrari 250 GTO,875000,195,7.8,7.2,RWD,Legendary,No,No,No,Italian;Vintage,Priceless classic
+45,Pegassi,Monroe,Sports Classic,Lamborghini Miura,490000,190,7.5,7.0,RWD,Legendary,No,No,No,Italian;Vintage,60s supercar
+46,Dewbauchee,JB 700,Sports Classic,Aston Martin DB5,350000,185,7.2,6.8,RWD,Legendary,No,No,Yes,British;Bond,James Bond car with weapons
+47,Truffade,Z-Type,Sports Classic,Bugatti Type 57,950000,180,7.0,6.5,RWD,Legendary,No,No,No,Vintage;Rare,1930s luxury
+48,Albany,Roosevelt,Sports Classic,1920s Limousine,750000,130,5.5,5.0,RWD,Legendary,No,No,No,Vintage;Rare,Prohibition era
+49,Pegassi,Faggio,Motorcycles,Vespa Scooter,5000,100,5.0,6.0,RWD,Street,No,No,No,Scooter;Meme,The legendary Faggio
+50,Nagasaki,Blazer,Off-Road,Quad Bike,8000,120,6.0,5.5,4WD,SSASA,No,No,No,ATV,Beach patrol
+51,Maibatsu,Sanchez,Off-Road,Dirt Bike,8000,145,7.5,6.5,RWD,SSASA,No,No,No,Dirt Bike,Offroad champion
+52,Nagasaki,BF400,Motorcycles,Supermoto,95000,180,8.8,7.5,RWD,Legendary,No,No,No,Supermoto,Street legal dirt bike
+53,Ocelot,Pariah,Sports,Aston Martin V12 Zagato,1420000,218,8.8,7.9,RWD,Legendary,Yes,No,No,British;HSW,Fastest sports car
+54,Grotti,Itali GTO,Sports,Ferrari 812 Superfast,1965000,215,9.1,7.6,RWD,Legendary,Yes,No,No,Italian;HSW,HSW makes it super-tier
+55,Pfister,Comet S2,Sports,Porsche 911 GT3,1878000,210,8.9,8.2,RWD,Legendary,Yes,No,No,German;HSW,Track focused
+56,Benefactor,SM722,Super,Mercedes SLR McLaren,2115000,248,9.0,7.8,RWD,Legendary,Yes,No,No,German;HSW,HSW elite performer
+57,Pegassi,Weaponized Ignus,Super,Lamborghini Sian,3245000,245,8.8,7.5,AWD,Warstock,No,No,Yes,Weaponized;Missiles,Armed supercar
+58,Mammoth,Patriot,SUVs,Hummer H2,45000,145,5.5,5.0,AWD,SSASA,No,No,No,American;Military,Military style SUV
+59,Declasse,Granger,SUVs,Chevrolet Suburban,35000,150,5.8,5.2,AWD,SSASA,No,No,No,American,Police variant exists
+60,HVY,Insurgent,Military,Terradyne Gurkha,897750,130,6.0,5.5,AWD,Warstock,No,No,Yes,Armored;Weaponized,Tank-like armor
+61,HVY,Nightshark,Military,Dartz Kombat,1245000,145,6.5,6.0,AWD,Warstock,No,No,Yes,Armored;Weaponized,Best armored daily driver
+62,Pegassi,Oppressor Mk II,Motorcycles,Hoverbike,3890250,230,8.0,8.5,N/A,Warstock,No,No,Yes,Flying;Weaponized;Grief,Most controversial vehicle
+63,Mammoth,Tula,Planes,Consolidated PBY,5173700,190,5.0,6.0,N/A,Warstock,No,No,Yes,VTOL;Amphibious,Water landing capable
+64,Western,Rogue,Planes,North American T-6,1596000,220,7.0,8.0,N/A,Warstock,No,No,Yes,Weaponized,Affordable armed plane
+65,Buckingham,Akula,Helicopters,Kamov Ka-52,3704050,175,7.5,7.0,N/A,Warstock,No,No,Yes,Stealth;Weaponized,Stealth helicopter
+66,Nagasaki,Buzzard,Helicopters,AH-6 Little Bird,1750000,165,7.0,7.5,N/A,Warstock,No,No,Yes,Weaponized,CEO spawn favorite
+67,Imponte,Duke O Death,Muscle,Dodge Charger Armored,665000,198,7.5,6.0,RWD,Warstock,No,No,No,Armored;Ramming,Returning player gift
+68,Vapid,Flash GT,Sports,Ford Focus RS,1675000,208,8.6,8.0,AWD,SSASA,No,No,No,Rally,Rally cross champion
+69,Annis,ZR350,Sports,Mazda RX-7,1615000,198,8.4,7.8,RWD,LS Car Meet,No,No,No,JDM;Tuner,Tuners update star
+70,Karin,Calico GTF,Sports,Toyota Celica GT-Four,1995000,205,8.8,7.9,AWD,LS Car Meet,No,No,No,JDM;Tuner,AWD grip monster
+71,Dinka,Jester RR,Sports,Honda NSX 2020,1970000,212,8.7,8.0,RWD,LS Car Meet,Yes,No,No,JDM;Tuner;HSW,Tuner update top tier
+72,Annis,Euros,Sports,Nissan 300ZX,1800000,195,8.2,7.6,RWD,LS Car Meet,No,No,No,JDM;Tuner,Z32 inspired
+73,Karin,Previon,Sports,Honda Prelude,1490000,185,7.8,7.4,FWD,LS Car Meet,No,No,No,JDM;Tuner,Front wheel fun
+74,Ubermacht,Cypher,Sports,BMW M2,1550000,198,8.5,8.2,RWD,LS Car Meet,No,No,No,German;Tuner,Balanced German tuner
+75,Bravado,Buffalo STX,Muscle,Dodge Charger Hellcat,2150000,208,8.2,6.8,RWD,Agency,No,Yes,No,American;IMANI,Agency update star
+76,Dewbauchee,Champion,Super,Aston Martin Valkyrie,2950000,240,8.9,7.7,RWD,Agency,No,Yes,No,British;IMANI,Hypercar with Imani
+77,Pfister,Astron,Sedans,Porsche Taycan,1580000,195,8.5,7.8,AWD,Legendary,No,Yes,No,Electric;IMANI,Electric luxury
+78,Enus,Deity,Sedans,Rolls Royce Ghost,1875000,185,7.2,7.0,AWD,Legendary,No,Yes,No,Luxury;IMANI,Ultimate luxury sedan
+79,Lampadati,Corsita,Sports,Maserati MC20,1795000,202,8.6,7.8,RWD,Legendary,Yes,No,No,Italian;HSW,Italian beauty with HSW
+80,Grotti,Furia,Super,Ferrari SF90,2740000,238,8.9,7.6,AWD,Legendary,No,No,No,Italian;Hybrid,Hybrid hypercar
+"""
+
+def main():
+    out = Path(__file__).resolve().parent.parent / "data" / "final_database.csv"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(data.strip() + "\n", encoding="utf-8")
+    print(f"✅ Wrote {out}")
+
+if __name__ == "__main__":
+    main()
