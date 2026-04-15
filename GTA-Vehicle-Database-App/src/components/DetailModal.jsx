@@ -1,4 +1,4 @@
-import { X, Gauge, Zap, Compass, DollarSign, Car, Store, Info } from 'lucide-react'
+import { X, Gauge, Zap, Compass, DollarSign, Car, Store, Info, ExternalLink } from 'lucide-react'
 import { useState } from 'react'
 
 export default function DetailModal({ vehicle, onClose }) {
@@ -142,6 +142,37 @@ export default function DetailModal({ vehicle, onClose }) {
                   #{tag}
                 </span>
               ))}
+            </div>
+          )}
+
+          {/* Top PC Mod */}
+          {v.Top_Mod_Title && (
+            <div className="bg-gray-800 rounded-lg p-4 mt-4">
+              <div className="flex items-center gap-2 text-amber-400 text-sm font-medium mb-2">
+                <ExternalLink className="w-4 h-4" />
+                Top PC Mod Replacement
+              </div>
+              <a
+                href={v.Top_Mod_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-white font-medium hover:text-amber-300 transition-colors line-clamp-2 block"
+              >
+                {v.Top_Mod_Title}
+              </a>
+              {v.Top_Mod_Downloads > 0 && (
+                <p className="text-gray-400 text-sm mt-1">
+                  {v.Top_Mod_Downloads.toLocaleString()} downloads
+                </p>
+              )}
+              <div className="mt-2">
+                {v.Top_Mod_Make && v.Real_World &&
+                  (v.Real_World.toLowerCase().startsWith(v.Top_Mod_Make.toLowerCase())
+                    ? <span className="text-green-400 text-xs font-medium">✓ Matches DB real-world mapping</span>
+                    : <span className="text-amber-400 text-xs font-medium">⚠ Community prefers {v.Top_Mod_Make} {v.Top_Mod_Model}</span>
+                  )
+                }
+              </div>
             </div>
           )}
         </div>

@@ -1,6 +1,6 @@
 import { RotateCcw } from 'lucide-react'
 
-export default function FilterPanel({ filters, setFilters, classes, shops, makes }) {
+export default function FilterPanel({ filters, setFilters, classes, shops, makes, modMakes }) {
   const updateFilter = (key, value) => {
     setFilters(prev => ({ ...prev, [key]: value }))
   }
@@ -14,7 +14,8 @@ export default function FilterPanel({ filters, setFilters, classes, shops, makes
       imani: false,
       weaponized: false,
       priceMin: 0,
-      priceMax: 10000000
+      priceMax: 10000000,
+      modMake: ''
     })
   }
 
@@ -63,6 +64,20 @@ export default function FilterPanel({ filters, setFilters, classes, shops, makes
             {makes.map(m => <option key={m} value={m}>{m}</option>)}
           </select>
         </div>
+
+        {modMakes?.length > 0 && (
+          <div>
+            <label className="block text-xs text-gray-500 mb-1">Mod Make</label>
+            <select
+              value={filters.modMake}
+              onChange={(e) => updateFilter('modMake', e.target.value)}
+              className="select-dark"
+            >
+              <option value="">All Mod Makes</option>
+              {modMakes.map(m => <option key={m} value={m}>{m}</option>)}
+            </select>
+          </div>
+        )}
 
         {/* Toggles */}
         <div className="flex gap-3">
