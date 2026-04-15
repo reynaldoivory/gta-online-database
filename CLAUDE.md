@@ -47,6 +47,24 @@ python scripts/livery_vehicle_checker.py
 python scripts/convert_to_xlsx.py
 ```
 
+### Mod Stack Pipeline (run in order)
+
+```bash
+pip install requests beautifulsoup4
+
+# Step 1: Scrape top replace mod per vehicle from gta5-mods.com (~45-60 min)
+#         Adds Top_Mod_Title/Make/Model/Downloads/URL columns to main CSV.
+#         Supports --limit N for smoke tests and auto-resumes from checkpoint.
+python scripts/mod_scraper.py --limit 5   # smoke test
+python scripts/mod_scraper.py             # full run
+
+# Step 2: Compare mod community choices vs DB real-world mappings.
+#         Outputs data/mod_match_report.csv and enriches the app CSV.
+python scripts/mod_match_report.py
+```
+
+The feature-rich app (`GTA-Vehicle-Database-App/`) auto-picks up the new columns once `mod_match_report.py` has run.
+
 ## Architecture
 
 ### Two React Apps (Important)
@@ -106,13 +124,34 @@ When editing or generating CSV data, these rules must be followed:
 
 Valid vehicle classes: Super, Sports, Sports Classic, Muscle, Sedan, Coupe, Compact, SUV, Off-Road, Motorcycle, Plane, Helicopter, Boat, Emergency, Commercial, Industrial, Service, Military, Arena, Open Wheel, Utility, Van
 
-## Data Sources & Attribution
+## Data Sources, SSOT Chain & Mod Mismatches
 
-- **GTABase.com** — vehicle specs, pricing, shop locations
-- **Broughy1322** — standardized top speed and lap time testing
-- **GTA Wiki (Fandom)** — real-world vehicle counterparts
+### Primary SSOT per data type
 
-When publishing the database, credit all three sources.
+| Data | Source | Script |
+|---|---|---|
+| Vehicle list (792 vehicles) | GTABase.com | `scripts/gta_vehicle_scraper.py` |
+| Real-world car mappings | GTA Wiki Fandom API | `scripts/wiki_api_scraper.py` |
+| Mapping corrections | Manual overrides | `scripts/fix_make_model_issues.py`, `scripts/fix_empty_makes.py` |
+| Performance (speed, lap time) | Broughy1322 (embedded in GTABase pages) | `scripts/gta_vehicle_scraper.py` |
+| Top PC mod per vehicle | gta5-mods.com (highest-downloaded replace mod) | `scripts/mod_scraper.py` |
+| Mod vs DB match analysis | Derived from above two | `scripts/mod_match_report.py` |
+
+**Important:** `GTA-Vehicle-Database-App/public/gta_vehicles_complete.csv` is a **hand-curated 80-vehicle subset** with a different schema (`ID/Make/Model/Real_World` instead of `Vehicle_ID/GTA_Make/GTA_Model/Real_World_Make/Real_World_Model`). It is **not** auto-generated from the Python pipeline. The `mod_match_report.py` script syncs the 5 mod columns into it by matching on `GTA_Model == Model`.
+
+When publishing the database, credit: GTABase.com, Broughy1322, GTA Wiki (Fandom).
+
+### Why the top mod often disagrees with the DB's Real_World mapping
+
+This is expected and not a data error. Five structural reasons:
+
+1. **Multi-inspiration design.** Most GTA cars blend 2–4 real vehicles. GTA Wiki records one primary inspiration; modders may pick a different car from the same blend (e.g., Zentorno = Lamborghini Veneno per Wiki, but Ferrari LaFerrari is the most-downloaded replace mod because it looks closer).
+2. **Community consensus drift.** Over years the community settles on a different "correct" car than what the Wiki originally noted. The DB reflects editorial Wiki accuracy; mods reflect current player preference.
+3. **Slot popularity over accuracy.** Modders choose the most desirable car that fits a slot, not the documented inspiration. The Adder slot gets Bugatti Chiron mods even though the Veyron is the official basis — because the Chiron is more current.
+4. **Many-to-one slots.** Generic tuner templates like Sultan and Elegy can fit dozens of real JDM cars. Whichever high-quality 3D model is available wins.
+5. **Add-On vs Replace distinction.** Most top-downloaded mods are Add-On (new slot) not Replace. Only Replace mods indicate which specific GTA vehicle the modder associates with a real car.
+
+Use `data/mod_match_report.csv` (column `Suggested_DB_Update = review`) to identify high-confidence mismatches worth manual review.
 
 ## Root-Level Python Scripts (Legacy)
 
