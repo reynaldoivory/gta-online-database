@@ -24,7 +24,8 @@ const columns = [
   { key: 'Price', label: 'Price', width: 'w-28' },
   { key: 'Drivetrain', label: 'Drive', width: 'w-16' },
   { key: 'Shop', label: 'Shop', width: 'w-24' },
-  { key: 'Tags', label: 'Tags', width: 'w-40' }
+  { key: 'Tags', label: 'Tags', width: 'w-40' },
+  { key: 'Top_Mod_Model', label: 'Top Mod', width: 'w-44' }
 ]
 
 export default function VehicleTable({ vehicles, sortConfig, onSort, onSelect }) {
@@ -94,6 +95,14 @@ export default function VehicleTable({ vehicles, sortConfig, onSort, onSelect })
               <td className="px-3 py-3 text-gray-400 text-sm">{v.Drivetrain}</td>
               <td className="px-3 py-3 text-gray-400 text-sm">{v.Shop}</td>
               <td className="px-3 py-3">{renderTags(v)}</td>
+              <td className="px-3 py-3">
+                {v.Top_Mod_Make
+                  ? <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-400 border border-amber-500/30 whitespace-nowrap">
+                      {v.Top_Mod_Make} {v.Top_Mod_Model}
+                    </span>
+                  : <span className="text-gray-600">—</span>
+                }
+              </td>
             </tr>
           ))}
         </tbody>

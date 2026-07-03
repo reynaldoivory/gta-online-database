@@ -19,7 +19,8 @@ function App() {
     imani: false,
     weaponized: false,
     priceMin: 0,
-    priceMax: 10000000
+    priceMax: 10000000,
+    modMake: ''
   })
   const [sortConfig, setSortConfig] = useState({ key: 'ID', direction: 'asc' })
   const [showFilters, setShowFilters] = useState(false)
@@ -44,6 +45,7 @@ function App() {
               HSW: v.HSW === 'Yes',
               Imani: v.Imani === 'Yes',
               Weaponized: v.Weaponized === 'Yes',
+              Top_Mod_Downloads: parseInt(v.Top_Mod_Downloads) || 0,
               image: `/vehicle_images/${v.Make?.toLowerCase()}_${v.Model?.toLowerCase().replace(/\s+/g, '_')}.png`
             }))
             setVehicles(parsed)
@@ -70,9 +72,10 @@ function App() {
       const matchesImani = !filters.imani || v.Imani
       const matchesWeaponized = !filters.weaponized || v.Weaponized
       const matchesPrice = v.Price >= filters.priceMin && v.Price <= filters.priceMax
+      const matchesModMake = !filters.modMake || v.Top_Mod_Make === filters.modMake
 
-      return matchesSearch && matchesClass && matchesShop && matchesMake && 
-             matchesHSW && matchesImani && matchesWeaponized && matchesPrice
+      return matchesSearch && matchesClass && matchesShop && matchesMake &&
+             matchesHSW && matchesImani && matchesWeaponized && matchesPrice && matchesModMake
     })
   }, [vehicles, search, filters])
 
@@ -95,6 +98,7 @@ function App() {
   const uniqueClasses = [...new Set(vehicles.map(v => v.Class).filter(Boolean))].sort()
   const uniqueShops = [...new Set(vehicles.map(v => v.Shop).filter(Boolean))].sort()
   const uniqueMakes = [...new Set(vehicles.map(v => v.Make).filter(Boolean))].sort()
+  const uniqueModMakes = [...new Set(vehicles.map(v => v.Top_Mod_Make).filter(Boolean))].sort()
 
   const handleSort = (key) => {
     setSortConfig(prev => ({
@@ -177,6 +181,7 @@ function App() {
             classes={uniqueClasses}
             shops={uniqueShops}
             makes={uniqueMakes}
+            modMakes={uniqueModMakes}
           />
         )}
       </div>

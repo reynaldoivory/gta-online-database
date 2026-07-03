@@ -7,7 +7,7 @@ export default function ExportButton({ vehicles }) {
   const [exporting, setExporting] = useState(false)
 
   const exportCSV = () => {
-    const headers = ['ID', 'Make', 'Model', 'Class', 'Real_World', 'Price', 'Top_Speed_MPH', 'Acceleration', 'Handling', 'Drivetrain', 'Shop', 'HSW', 'Imani', 'Weaponized', 'Tags', 'Notes']
+    const headers = ['ID', 'Make', 'Model', 'Class', 'Real_World', 'Price', 'Top_Speed_MPH', 'Acceleration', 'Handling', 'Drivetrain', 'Shop', 'HSW', 'Imani', 'Weaponized', 'Tags', 'Notes', 'Top_Mod_Title', 'Top_Mod_Make', 'Top_Mod_Model', 'Top_Mod_Downloads', 'Top_Mod_URL']
     const rows = vehicles.map(v => 
       headers.map(h => {
         const val = v[h]
@@ -27,7 +27,7 @@ export default function ExportButton({ vehicles }) {
       const zip = new JSZip()
       
       // Add CSV
-      const headers = ['ID', 'Make', 'Model', 'Class', 'Real_World', 'Price', 'Top_Speed_MPH', 'Acceleration', 'Handling', 'Drivetrain', 'Shop', 'HSW', 'Imani', 'Weaponized', 'Tags', 'Notes']
+      const headers = ['ID', 'Make', 'Model', 'Class', 'Real_World', 'Price', 'Top_Speed_MPH', 'Acceleration', 'Handling', 'Drivetrain', 'Shop', 'HSW', 'Imani', 'Weaponized', 'Tags', 'Notes', 'Top_Mod_Title', 'Top_Mod_Make', 'Top_Mod_Model', 'Top_Mod_Downloads', 'Top_Mod_URL']
       const rows = vehicles.map(v => 
         headers.map(h => {
           const val = v[h]
