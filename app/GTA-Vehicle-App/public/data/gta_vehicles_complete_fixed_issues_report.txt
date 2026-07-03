@@ -1,6 +1,0 @@
-GTA Vehicle Database - Make/Model Issues Report
-================================================================================
-
-Total issues found: 0
-Vehicles fixed: 0
-

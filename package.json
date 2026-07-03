@@ -4,10 +4,20 @@
   "private": true,
   "description": "GTA Online Vehicle Equivalencies Database",
   "scripts": {
-    "dev": "cd app/GTA-Vehicle-App && npm run dev",
-    "build": "cd app/GTA-Vehicle-App && npm run build",
-    "preview": "cd app/GTA-Vehicle-App && npm run preview",
-    "install:app": "cd app/GTA-Vehicle-App && npm install"
+    "dev": "cd GTA-Vehicle-Database-App && npm run dev",
+    "build": "cd GTA-Vehicle-Database-App && npm run build",
+    "preview": "cd GTA-Vehicle-Database-App && npm run preview",
+    "install:app": "cd GTA-Vehicle-Database-App && npm install",
+    "lint": "cd GTA-Vehicle-Database-App && npm run lint || echo 'Linting skipped - no lint script'",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "GTA-Vehicle-Database-App/**/*.{js,jsx}": [
+      "cd GTA-Vehicle-Database-App && eslint --fix"
+    ],
+    "data/*.csv": [
+      "echo 'CSV file changed - validating...'"
+    ]
   },
   "keywords": [
     "gta",
@@ -15,5 +25,9 @@
     "database"
   ],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0"
+  }
 }

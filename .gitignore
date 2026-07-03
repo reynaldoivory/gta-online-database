@@ -1,2 +1,33 @@
-# Ignore generated Excel export
+# Dependencies
+node_modules/
+package-lock.json
+
+# Build outputs
+dist/
+build/
+*.log
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Generated files
 /data/gta_vehicles_complete.xlsx
+*.pyc
+__pycache__/
+
+# Temporary files
+*.tmp
+.cache/

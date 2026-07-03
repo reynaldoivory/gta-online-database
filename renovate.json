@@ -1,0 +1,48 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "schedule": ["before 6am on Monday"],
+  "timezone": "America/Los_Angeles",
+  "labels": ["dependencies"],
+  "assignees": ["@reynaldoivory"],
+  "packageRules": [
+    {
+      "groupName": "React ecosystem",
+      "matchPackagePatterns": ["^react", "^@types/react"],
+      "automerge": false
+    },
+    {
+      "groupName": "Development dependencies",
+      "matchDepTypes": ["devDependencies"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": true,
+      "automergeType": "pr"
+    },
+    {
+      "groupName": "Production dependencies",
+      "matchDepTypes": ["dependencies"],
+      "matchUpdateTypes": ["patch"],
+      "automerge": true,
+      "automergeType": "pr"
+    },
+    {
+      "groupName": "Build tools",
+      "matchPackageNames": ["vite", "@vitejs/plugin-react"],
+      "automerge": false
+    },
+    {
+      "groupName": "Data processing libraries",
+      "matchPackageNames": ["papaparse", "jszip"],
+      "automerge": false
+    }
+  ],
+  "vulnerabilityAlerts": {
+    "labels": ["security"],
+    "assignees": ["@reynaldoivory"]
+  },
+  "prConcurrentLimit": 5,
+  "prHourlyLimit": 2,
+  "rangeStrategy": "bump",
+  "semanticCommits": "enabled",
+  "commitMessagePrefix": "chore(deps):"
+}
