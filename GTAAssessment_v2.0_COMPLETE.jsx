@@ -32,6 +32,9 @@ export default function GTAMetaAssessment() {
     dreContractDone: false,
     securityContractsDone: '',
     payphoneHitsDone: '',
+    // Mansion Raid (A Safehouse in the Hills)
+    hasMansionRaidAccess: false,
+    mansionRaidBonusDone: false,
     hasAcidLab: false,
     acidLabUpgraded: false,
     hasNightclub: false,
@@ -396,6 +399,20 @@ export default function GTAMetaAssessment() {
       });
     }
 
+    // Mansion Raid - one-time bonus tracking
+    if (formData.hasMansionRaidAccess && !formData.mansionRaidBonusDone) {
+      addBottleneck({
+        id: 'mansion-raid-first-time',
+        critical: false,
+        issue: 'Mansion Raid first-time bonuses incomplete',
+        impact: 'Missing big one-time payout from the three mansions',
+        fix: 'Complete Mansion Raid for Tongva Estate, Vinewood Residence, and Richman Villa once',
+        time: 3,
+        priority: 2,
+        category: 'active'
+      });
+    }
+
     breakdown.active.score += formData.checksWeeklyBonuses ? 2 : 0;
 
     // TRAVEL
@@ -537,6 +554,7 @@ export default function GTAMetaAssessment() {
     if (!formData.hasKosatka) activeHoursNeeded += 10;
     if (formData.hasKosatka && !formData.hasSparrow) activeHoursNeeded += 5;
     if (formData.hasAgency && !formData.dreContractDone) activeHoursNeeded += 4;
+    if (formData.hasMansionRaidAccess && !formData.mansionRaidBonusDone) activeHoursNeeded += 3;
 
     const cayoRuns = parseInt(formData.cayoCompletions) || 0;
     if (cayoRuns < 10) {
@@ -1129,6 +1147,40 @@ export default function GTAMetaAssessment() {
                             min="0"
                             max="500"
                           />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Mansion Raid (A Safehouse in the Hills) */}
+                  <div className="p-4 bg-gray-700/30 rounded-lg">
+                    <div className="flex items-center gap-2 mb-3">
+                      <input
+                        type="checkbox"
+                        checked={formData.hasMansionRaidAccess}
+                        onChange={(e) => handleInputChange('hasMansionRaidAccess', e.target.checked)}
+                        className="w-5 h-5"
+                      />
+                      <label className="text-white font-medium flex items-center">
+                        Mansion Raid Access
+                        <Tooltip text="Own at least one of the three mansions: Tongva Estate, Vinewood Residence, or Richman Villa." />
+                      </label>
+                    </div>
+                    {formData.hasMansionRaidAccess && (
+                      <div className="mt-3 ml-7 space-y-3">
+                        <div className="text-xs text-gray-400">
+                          One-time bonus for completing raids at all three mansions: Tongva Estate, Vinewood Residence, and Richman Villa.
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="checkbox"
+                            checked={formData.mansionRaidBonusDone}
+                            onChange={(e) => handleInputChange('mansionRaidBonusDone', e.target.checked)}
+                            className="w-4 h-4"
+                          />
+                          <label className="text-sm text-gray-300">
+                            I have already completed the Mansion Raid one-time bonus (all three mansions once)
+                          </label>
                         </div>
                       </div>
                     )}
