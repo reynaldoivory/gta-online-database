@@ -1,7 +1,24 @@
-import { X, Gauge, Zap, Compass, DollarSign, Car, Store, Info, ExternalLink } from 'lucide-react'
+import { X, Gauge, Zap, Compass, DollarSign, Car, Store, Info, ExternalLink, Timer } from 'lucide-react'
+import { useEffect, useRef } from 'react'
 
 export default function DetailModal({ vehicle, onClose }) {
   const v = vehicle
+  const dialogRef = useRef(null)
+
+  useEffect(() => {
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape') onClose()
+    }
+    const previouslyFocused = document.activeElement
+    document.addEventListener('keydown', onKeyDown)
+    document.body.style.overflow = 'hidden'
+    dialogRef.current?.focus()
+    return () => {
+      document.removeEventListener('keydown', onKeyDown)
+      document.body.style.overflow = ''
+      previouslyFocused?.focus?.()
+    }
+  }, [onClose])
 
   const formatPrice = (price) => {
     if (price === 0) return 'Free'
@@ -28,56 +45,84 @@ export default function DetailModal({ vehicle, onClose }) {
 
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={onClose}>
-      <div 
-        className="bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+      <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="vehicle-detail-title"
+        tabIndex={-1}
+        className="bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto focus:outline-none"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="sticky top-0 bg-gray-900/95 backdrop-blur border-b border-gray-700 p-4 flex items-center justify-between">
           <div>
-            <h2 className="text-2xl font-bold text-white">{v.Make} {v.Model}</h2>
+            <h2 id="vehicle-detail-title" className="text-2xl font-bold text-white">{v.Make} {v.Model}</h2>
             <p className="text-gray-400">{v.Real_World}</p>
           </div>
-          <button onClick={onClose} className="p-2 hover:bg-gray-700 rounded-lg transition-colors">
+          <button onClick={onClose} aria-label="Close" className="p-2 hover:bg-gray-700 rounded-lg transition-colors">
             <X className="w-6 h-6 text-gray-400" />
           </button>
         </div>
 
         <div className="p-6">
-          {/* Badges */}
+          {/* Badges — HSW/Weaponized suppressed: unreliable in current data */}
           <div className="flex flex-wrap gap-2 mb-6">
-            <span className="px-3 py-1 bg-purple-600/20 text-purple-400 rounded-full text-sm font-medium border border-purple-500/30">
-              {v.Class}
-            </span>
-            {v.HSW && <span className="badge badge-hsw">HSW Upgrade</span>}
+            {(v.Class || '').split(',').filter(Boolean).map(cls => (
+              <span key={cls} className="px-3 py-1 bg-purple-600/20 text-purple-400 rounded-full text-sm font-medium border border-purple-500/30">
+                {cls.trim()}
+              </span>
+            ))}
             {v.Imani && <span className="badge badge-imani">Imani Tech</span>}
-            {v.Weaponized && <span className="badge badge-wpn">Weaponized</span>}
+            {v.Arena && (
+              <span className="badge bg-red-500/20 text-red-400 border border-red-500/30">Arena War</span>
+            )}
           </div>
 
-          {/* Stats Grid */}
+          {/* Stats Grid — bars only render when the dataset has a value */}
           <div className="grid grid-cols-2 gap-6 mb-6">
             <div>
-              <StatBar 
-                label="Top Speed" 
-                value={`${v.Top_Speed_MPH} mph`} 
-                max={260} 
-                color="bg-blue-500" 
-                icon={Gauge}
-              />
-              <StatBar 
-                label="Acceleration" 
-                value={v.Acceleration} 
-                max={10} 
-                color="bg-green-500" 
-                icon={Zap}
-              />
-              <StatBar 
-                label="Handling" 
-                value={v.Handling} 
-                max={10} 
-                color="bg-orange-500" 
-                icon={Compass}
-              />
+              {v.Top_Speed_MPH > 0 && (
+                <StatBar
+                  label="Top Speed"
+                  value={`${v.Top_Speed_MPH} mph`}
+                  max={260}
+                  color="bg-blue-500"
+                  icon={Gauge}
+                />
+              )}
+              {v.Acceleration > 0 && (
+                <StatBar
+                  label="Acceleration"
+                  value={v.Acceleration}
+                  max={10}
+                  color="bg-green-500"
+                  icon={Zap}
+                />
+              )}
+              {v.Handling > 0 && (
+                <StatBar
+                  label="Handling"
+                  value={v.Handling}
+                  max={10}
+                  color="bg-orange-500"
+                  icon={Compass}
+                />
+              )}
+              {v.Lap_Time && (
+                <div className="mb-3">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-gray-400 text-sm flex items-center gap-2">
+                      <Timer className="w-4 h-4" />
+                      Lap Time
+                    </span>
+                    <span className="text-white font-medium">{v.Lap_Time}</span>
+                  </div>
+                </div>
+              )}
+              {!(v.Top_Speed_MPH > 0) && !(v.Acceleration > 0) && !(v.Handling > 0) && !v.Lap_Time && (
+                <p className="text-gray-500 text-sm">No performance data recorded</p>
+              )}
             </div>
             <div className="space-y-4">
               <div className="bg-gray-800 rounded-lg p-4">
@@ -99,7 +144,7 @@ export default function DetailModal({ vehicle, onClose }) {
                   <Store className="w-4 h-4" />
                   Purchase Location
                 </div>
-                <div className="text-xl font-semibold text-white">{v.Shop}</div>
+                <div className="text-xl font-semibold text-white">{v.Shop || 'N/A'}</div>
               </div>
             </div>
           </div>

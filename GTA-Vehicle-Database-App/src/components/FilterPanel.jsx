@@ -1,22 +1,8 @@
 import { RotateCcw } from 'lucide-react'
 
-export default function FilterPanel({ filters, setFilters, classes, shops, makes, modMakes }) {
+export default function FilterPanel({ filters, setFilters, classes, shops, makes, modMakes, onReset }) {
   const updateFilter = (key, value) => {
     setFilters(prev => ({ ...prev, [key]: value }))
-  }
-
-  const resetFilters = () => {
-    setFilters({
-      class: '',
-      shop: '',
-      make: '',
-      hsw: false,
-      imani: false,
-      weaponized: false,
-      priceMin: 0,
-      priceMax: 10000000,
-      modMake: ''
-    })
   }
 
   const formatPrice = (val) => {
@@ -141,7 +127,7 @@ export default function FilterPanel({ filters, setFilters, classes, shops, makes
 
         {/* Reset */}
         <button
-          onClick={resetFilters}
+          onClick={onReset}
           className="btn-secondary flex items-center gap-2"
         >
           <RotateCcw className="w-4 h-4" />

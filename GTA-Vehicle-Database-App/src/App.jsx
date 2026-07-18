@@ -1,28 +1,30 @@
 import { useState, useEffect, useMemo } from 'react'
 import Papa from 'papaparse'
-import { Search, Filter, BarChart3, Download, Car, X } from 'lucide-react'
+import { Search, Filter, BarChart3, Car, X } from 'lucide-react'
 import VehicleTable from './components/VehicleTable'
 import FilterPanel from './components/FilterPanel'
 import StatsChart from './components/StatsChart'
 import DetailModal from './components/DetailModal'
 import ExportButton from './components/ExportButton'
 
+const DEFAULT_FILTERS = {
+  class: '',
+  shop: '',
+  make: '',
+  hsw: false,
+  imani: false,
+  weaponized: false,
+  priceMin: 0,
+  priceMax: 10000000,
+  modMake: ''
+}
+
 function App() {
   const [vehicles, setVehicles] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [search, setSearch] = useState('')
-  const [filters, setFilters] = useState({
-    class: '',
-    shop: '',
-    make: '',
-    hsw: false,
-    imani: false,
-    weaponized: false,
-    priceMin: 0,
-    priceMax: 10000000,
-    modMake: ''
-  })
+  const [filters, setFilters] = useState(DEFAULT_FILTERS)
   const [sortConfig, setSortConfig] = useState({ key: 'ID', direction: 'asc' })
   const [showFilters, setShowFilters] = useState(false)
   const [showChart, setShowChart] = useState(false)
@@ -85,7 +87,8 @@ function App() {
         v.Real_World?.toLowerCase().includes(searchLower) ||
         v.Class?.toLowerCase().includes(searchLower)
       
-      const matchesClass = !filters.class || v.Class === filters.class
+      const matchesClass = !filters.class ||
+        (v.Class || '').split(',').map(c => c.trim()).includes(filters.class)
       const matchesShop = !filters.shop || v.Shop === filters.shop
       const matchesMake = !filters.make || v.Make === filters.make
       const matchesHSW = !filters.hsw || v.HSW
@@ -115,16 +118,24 @@ function App() {
     return sorted
   }, [filteredVehicles, sortConfig])
 
-  const uniqueClasses = [...new Set(vehicles.map(v => v.Class).filter(Boolean))].sort()
-  const uniqueShops = [...new Set(vehicles.map(v => v.Shop).filter(Boolean))].sort()
-  const uniqueMakes = [...new Set(vehicles.map(v => v.Make).filter(Boolean))].sort()
-  const uniqueModMakes = [...new Set(vehicles.map(v => v.Top_Mod_Make).filter(Boolean))].sort()
+  const { uniqueClasses, uniqueShops, uniqueMakes, uniqueModMakes } = useMemo(() => ({
+    uniqueClasses: [...new Set(vehicles.flatMap(v => (v.Class || '').split(',').map(c => c.trim())).filter(Boolean))].sort(),
+    uniqueShops: [...new Set(vehicles.map(v => v.Shop).filter(Boolean))].sort(),
+    uniqueMakes: [...new Set(vehicles.map(v => v.Make).filter(Boolean))].sort(),
+    uniqueModMakes: [...new Set(vehicles.map(v => v.Top_Mod_Make).filter(Boolean))].sort()
+  }), [vehicles])
 
   const handleSort = (key) => {
     setSortConfig(prev => ({
       key,
       direction: prev.key === key && prev.direction === 'asc' ? 'desc' : 'asc'
     }))
+  }
+
+  const handleReset = () => {
+    setFilters(DEFAULT_FILTERS)
+    setSearch('')
+    setSortConfig({ key: 'ID', direction: 'asc' })
   }
 
   if (loading) {
@@ -214,6 +225,7 @@ function App() {
             shops={uniqueShops}
             makes={uniqueMakes}
             modMakes={uniqueModMakes}
+            onReset={handleReset}
           />
         )}
       </div>

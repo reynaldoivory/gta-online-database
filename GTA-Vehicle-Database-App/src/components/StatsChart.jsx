@@ -1,28 +1,30 @@
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, ScatterChart, Scatter, CartesianGrid, Legend } from 'recharts'
-import { useState } from 'react'
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, ScatterChart, Scatter, CartesianGrid } from 'recharts'
+import { useMemo, useState } from 'react'
 
 const COLORS = ['#9b4dca', '#3b82f6', '#f97316', '#eab308', '#22c55e', '#ef4444', '#06b6d4', '#8b5cf6', '#ec4899', '#14b8a6', '#f43f5e', '#6366f1']
 
 export default function StatsChart({ vehicles }) {
   const [chartType, setChartType] = useState('class')
 
-  const classStats = Object.entries(
+  const classStats = useMemo(() => Object.entries(
     vehicles.reduce((acc, v) => {
-      acc[v.Class] = (acc[v.Class] || 0) + 1
+      for (const cls of (v.Class || '').split(',').map(c => c.trim()).filter(Boolean)) {
+        acc[cls] = (acc[cls] || 0) + 1
+      }
       return acc
     }, {})
   )
     .map(([name, count]) => ({ name, count }))
-    .sort((a, b) => b.count - a.count)
+    .sort((a, b) => b.count - a.count), [vehicles])
 
-  const priceVsSpeed = vehicles
+  const priceVsSpeed = useMemo(() => vehicles
     .filter(v => v.Price > 0 && v.Top_Speed_MPH > 0)
     .map(v => ({
       name: `${v.Make} ${v.Model}`,
       price: v.Price / 1000000,
       speed: v.Top_Speed_MPH,
       class: v.Class
-    }))
+    })), [vehicles])
 
   const CustomTooltip = ({ active, payload }) => {
     if (!active || !payload?.length) return null
