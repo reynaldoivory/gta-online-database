@@ -1,8 +1,6 @@
 import { X, Gauge, Zap, Compass, DollarSign, Car, Store, Info, ExternalLink } from 'lucide-react'
-import { useState } from 'react'
 
 export default function DetailModal({ vehicle, onClose }) {
-  const [imgError, setImgError] = useState(false)
   const v = vehicle
 
   const formatPrice = (price) => {
@@ -46,23 +44,6 @@ export default function DetailModal({ vehicle, onClose }) {
         </div>
 
         <div className="p-6">
-          {/* Image */}
-          <div className="bg-gray-800 rounded-xl h-48 flex items-center justify-center mb-6 overflow-hidden">
-            {!imgError ? (
-              <img 
-                src={v.image} 
-                alt={`${v.Make} ${v.Model}`}
-                className="max-w-full max-h-full object-contain"
-                onError={() => setImgError(true)}
-              />
-            ) : (
-              <div className="text-center">
-                <Car className="w-16 h-16 text-gray-600 mx-auto mb-2" />
-                <p className="text-gray-500">No image available</p>
-              </div>
-            )}
-          </div>
-
           {/* Badges */}
           <div className="flex flex-wrap gap-2 mb-6">
             <span className="px-3 py-1 bg-purple-600/20 text-purple-400 rounded-full text-sm font-medium border border-purple-500/30">

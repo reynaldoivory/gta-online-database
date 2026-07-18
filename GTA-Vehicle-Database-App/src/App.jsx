@@ -10,6 +10,7 @@ import ExportButton from './components/ExportButton'
 function App() {
   const [vehicles, setVehicles] = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
   const [search, setSearch] = useState('')
   const [filters, setFilters] = useState({
     class: '',
@@ -29,31 +30,50 @@ function App() {
 
   useEffect(() => {
     fetch('/gta_vehicles_complete.csv')
-      .then(res => res.text())
+      .then(res => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`)
+        return res.text()
+      })
       .then(csv => {
         Papa.parse(csv, {
           header: true,
           skipEmptyLines: true,
           complete: (results) => {
+            if (results.data.length === 0) {
+              setError('Vehicle data file is empty or could not be parsed')
+              setLoading(false)
+              return
+            }
+            // Normalize both CSV schemas: the Python pipeline's
+            // (Vehicle_ID/GTA_Make/GTA_Model/Real_World_Make+Model, TRUE/FALSE)
+            // and the legacy app schema (ID/Make/Model/Real_World, Yes/No).
+            const isTrue = (val) => val === 'TRUE' || val === 'Yes'
             const parsed = results.data.map((v, idx) => ({
               ...v,
-              ID: parseInt(v.ID) || idx + 1,
+              ID: parseInt(v.Vehicle_ID ?? v.ID) || idx + 1,
+              Make: v.GTA_Make ?? v.Make,
+              Model: v.GTA_Model ?? v.Model,
+              Real_World: v.Real_World ?? [v.Real_World_Make, v.Real_World_Model].filter(Boolean).join(' '),
               Price: parseInt(v.Price) || 0,
               Top_Speed_MPH: parseFloat(v.Top_Speed_MPH) || 0,
               Acceleration: parseFloat(v.Acceleration) || 0,
               Handling: parseFloat(v.Handling) || 0,
-              HSW: v.HSW === 'Yes',
-              Imani: v.Imani === 'Yes',
-              Weaponized: v.Weaponized === 'Yes',
-              Top_Mod_Downloads: parseInt(v.Top_Mod_Downloads) || 0,
-              image: `/vehicle_images/${v.Make?.toLowerCase()}_${v.Model?.toLowerCase().replace(/\s+/g, '_')}.png`
+              HSW: isTrue(v.HSW),
+              Imani: isTrue(v.Imani),
+              Weaponized: isTrue(v.Weaponized),
+              Bennys: isTrue(v.Bennys),
+              Arena: isTrue(v.Arena),
+              Top_Mod_Downloads: parseInt(v.Top_Mod_Downloads) || 0
             }))
             setVehicles(parsed)
             setLoading(false)
           }
         })
       })
-      .catch(() => setLoading(false))
+      .catch(err => {
+        setError(`Could not load vehicle data (${err.message})`)
+        setLoading(false)
+      })
   }, [])
 
   const filteredVehicles = useMemo(() => {
@@ -82,8 +102,8 @@ function App() {
   const sortedVehicles = useMemo(() => {
     const sorted = [...filteredVehicles]
     sorted.sort((a, b) => {
-      let aVal = a[sortConfig.key]
-      let bVal = b[sortConfig.key]
+      let aVal = a[sortConfig.key] ?? ''
+      let bVal = b[sortConfig.key] ?? ''
       
       if (typeof aVal === 'string') aVal = aVal.toLowerCase()
       if (typeof bVal === 'string') bVal = bVal.toLowerCase()
@@ -113,6 +133,18 @@ function App() {
         <div className="text-center">
           <Car className="w-16 h-16 text-purple-500 animate-pulse mx-auto mb-4" />
           <p className="text-gray-400 text-lg">Loading vehicles...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <Car className="w-16 h-16 text-red-500 mx-auto mb-4" />
+          <p className="text-red-400 text-lg font-medium mb-2">Failed to load vehicle data</p>
+          <p className="text-gray-500 text-sm">{error}</p>
         </div>
       </div>
     )

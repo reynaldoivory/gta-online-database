@@ -124,7 +124,7 @@ export default function FilterPanel({ filters, setFilters, classes, shops, makes
               max="5000000"
               step="50000"
               value={filters.priceMin}
-              onChange={(e) => updateFilter('priceMin', parseInt(e.target.value))}
+              onChange={(e) => updateFilter('priceMin', Math.min(parseInt(e.target.value), filters.priceMax))}
               className="flex-1 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-purple-500"
             />
             <input
@@ -133,7 +133,7 @@ export default function FilterPanel({ filters, setFilters, classes, shops, makes
               max="10000000"
               step="100000"
               value={filters.priceMax}
-              onChange={(e) => updateFilter('priceMax', parseInt(e.target.value))}
+              onChange={(e) => updateFilter('priceMax', Math.max(parseInt(e.target.value), filters.priceMin))}
               className="flex-1 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-purple-500"
             />
           </div>
