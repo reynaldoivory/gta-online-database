@@ -159,3 +159,9 @@ All critical issues have been resolved:
 - Legacy files removed
 - Documentation updated and accurate
 - Project structure clean and maintainable
+
+---
+
+## Correction (2026-07-18)
+
+The 2026-04-11 CSV swap (replacing the app's 80-vehicle `public/gta_vehicles_complete.csv` with the full 795-vehicle dataset) changed the CSV **schema** without updating the app code. The two files used different column names (`ID/Make/Model/Real_World` with `Yes`/`No` booleans vs `Vehicle_ID/GTA_Make/GTA_Model/Real_World_Make/Real_World_Model` with `TRUE`/`FALSE` booleans), so the app rendered empty/broken rows from 2026-04-11 until today, when `App.jsx` and the components were rewired to the real `Vehicle_ID`/`GTA_Make` schema. The "Working: Yes" status above was inaccurate — the structure was verified but the app was never run against the new data.

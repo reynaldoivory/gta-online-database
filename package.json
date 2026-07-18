@@ -12,9 +12,6 @@
     "prepare": "husky"
   },
   "lint-staged": {
-    "GTA-Vehicle-Database-App/**/*.{js,jsx}": [
-      "cd GTA-Vehicle-Database-App && eslint --fix"
-    ],
     "data/*.csv": [
       "echo 'CSV file changed - validating...'"
     ]

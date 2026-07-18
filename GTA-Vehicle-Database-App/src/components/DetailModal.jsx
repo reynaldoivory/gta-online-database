@@ -1,4 +1,4 @@
-import { X, Gauge, Zap, Compass, DollarSign, Car, Store, Info, ExternalLink } from 'lucide-react'
+import { X, Gauge, Timer, DollarSign, Car, Store, Info, ExternalLink } from 'lucide-react'
 import { useState } from 'react'
 
 export default function DetailModal({ vehicle, onClose }) {
@@ -71,32 +71,31 @@ export default function DetailModal({ vehicle, onClose }) {
             {v.HSW && <span className="badge badge-hsw">HSW Upgrade</span>}
             {v.Imani && <span className="badge badge-imani">Imani Tech</span>}
             {v.Weaponized && <span className="badge badge-wpn">Weaponized</span>}
+            {v.Bennys && <span className="badge bg-pink-500/20 text-pink-400 border border-pink-500/30">Benny's</span>}
+            {v.Arena && <span className="badge bg-orange-500/20 text-orange-400 border border-orange-500/30">Arena War</span>}
           </div>
 
           {/* Stats Grid */}
           <div className="grid grid-cols-2 gap-6 mb-6">
-            <div>
-              <StatBar 
-                label="Top Speed" 
-                value={`${v.Top_Speed_MPH} mph`} 
-                max={260} 
-                color="bg-blue-500" 
-                icon={Gauge}
-              />
-              <StatBar 
-                label="Acceleration" 
-                value={v.Acceleration} 
-                max={10} 
-                color="bg-green-500" 
-                icon={Zap}
-              />
-              <StatBar 
-                label="Handling" 
-                value={v.Handling} 
-                max={10} 
-                color="bg-orange-500" 
-                icon={Compass}
-              />
+            <div className="space-y-4">
+              {v.Top_Speed_MPH > 0 && (
+                <StatBar
+                  label="Top Speed"
+                  value={`${v.Top_Speed_MPH} mph`}
+                  max={260}
+                  color="bg-blue-500"
+                  icon={Gauge}
+                />
+              )}
+              <div className="bg-gray-800 rounded-lg p-4">
+                <div className="flex items-center gap-2 text-gray-400 text-sm mb-1">
+                  <Timer className="w-4 h-4" />
+                  Lap Time
+                </div>
+                <div className="text-2xl font-bold text-blue-400 font-mono">
+                  {v.Lap_Time || 'N/A'}
+                </div>
+              </div>
             </div>
             <div className="space-y-4">
               <div className="bg-gray-800 rounded-lg p-4">

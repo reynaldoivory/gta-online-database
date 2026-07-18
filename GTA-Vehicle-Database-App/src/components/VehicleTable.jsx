@@ -25,7 +25,7 @@ const columns = [
   { key: 'Drivetrain', label: 'Drive', width: 'w-16' },
   { key: 'Shop', label: 'Shop', width: 'w-24' },
   { key: 'Tags', label: 'Tags', width: 'w-40' },
-  { key: 'Top_Mod_Model', label: 'Top Mod', width: 'w-44' }
+  { key: 'Lap_Time', label: 'Lap Time', width: 'w-24' }
 ]
 
 export default function VehicleTable({ vehicles, sortConfig, onSort, onSelect }) {
@@ -47,7 +47,9 @@ export default function VehicleTable({ vehicles, sortConfig, onSort, onSelect })
     if (vehicle.HSW) badges.push(<span key="hsw" className="badge badge-hsw">HSW</span>)
     if (vehicle.Imani) badges.push(<span key="imani" className="badge badge-imani">IMANI</span>)
     if (vehicle.Weaponized) badges.push(<span key="wpn" className="badge badge-wpn">WPN</span>)
-    
+    if (vehicle.Bennys) badges.push(<span key="bennys" className="badge bg-pink-500/20 text-pink-400 border border-pink-500/30">BENNYS</span>)
+    if (vehicle.Arena) badges.push(<span key="arena" className="badge bg-orange-500/20 text-orange-400 border border-orange-500/30">ARENA</span>)
+
     const tags = vehicle.Tags?.split(';').filter(Boolean) || []
     tags.slice(0, 2).forEach((tag, i) => {
       badges.push(
@@ -95,13 +97,8 @@ export default function VehicleTable({ vehicles, sortConfig, onSort, onSelect })
               <td className="px-3 py-3 text-gray-400 text-sm">{v.Drivetrain}</td>
               <td className="px-3 py-3 text-gray-400 text-sm">{v.Shop}</td>
               <td className="px-3 py-3">{renderTags(v)}</td>
-              <td className="px-3 py-3">
-                {v.Top_Mod_Make
-                  ? <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-400 border border-amber-500/30 whitespace-nowrap">
-                      {v.Top_Mod_Make} {v.Top_Mod_Model}
-                    </span>
-                  : <span className="text-gray-600">—</span>
-                }
+              <td className="px-3 py-3 text-gray-400 text-sm font-mono">
+                {v.Lap_Time || <span className="text-gray-600">—</span>}
               </td>
             </tr>
           ))}

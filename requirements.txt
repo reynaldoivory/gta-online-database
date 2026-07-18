@@ -1,0 +1,10 @@
+# Python dependencies for the data pipeline in scripts/ (and data/generate_data.py).
+# CI (.github/workflows/ci.yml) runs the data-validation job on Python 3.11.
+requests>=2.31
+beautifulsoup4>=4.12
+pandas>=2.0
+# convert_to_xlsx.py uses DataFrame.to_excel, which needs an engine:
+openpyxl>=3.1
+# Optional faster HTML parser for BeautifulSoup (scripts currently use the
+# stdlib 'html.parser', so this is not strictly required):
+lxml>=4.9

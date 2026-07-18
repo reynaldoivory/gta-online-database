@@ -35,19 +35,32 @@ function App() {
           header: true,
           skipEmptyLines: true,
           complete: (results) => {
-            const parsed = results.data.map((v, idx) => ({
-              ...v,
-              ID: parseInt(v.ID) || idx + 1,
-              Price: parseInt(v.Price) || 0,
-              Top_Speed_MPH: parseFloat(v.Top_Speed_MPH) || 0,
-              Acceleration: parseFloat(v.Acceleration) || 0,
-              Handling: parseFloat(v.Handling) || 0,
-              HSW: v.HSW === 'Yes',
-              Imani: v.Imani === 'Yes',
-              Weaponized: v.Weaponized === 'Yes',
-              Top_Mod_Downloads: parseInt(v.Top_Mod_Downloads) || 0,
-              image: `/vehicle_images/${v.Make?.toLowerCase()}_${v.Model?.toLowerCase().replace(/\s+/g, '_')}.png`
-            }))
+            // CSV schema: Vehicle_ID,GTA_Make,GTA_Model,Class,Real_World_Make,Real_World_Model,
+            //             Price,Drivetrain,Shop,Top_Speed_MPH,Lap_Time,Weaponized,HSW,Imani,Bennys,Arena,Notes
+            // Booleans are TRUE/FALSE (accept Yes/No for legacy data).
+            const parseBool = (val) =>
+              typeof val === 'string' && ['true', 'yes'].includes(val.trim().toLowerCase())
+            const parsed = results.data.map((v, idx) => {
+              const make = v.GTA_Make || ''
+              const model = v.GTA_Model || ''
+              return {
+                ...v,
+                ID: parseInt(v.Vehicle_ID) || idx + 1,
+                Make: make,
+                Model: model,
+                Real_World: [v.Real_World_Make, v.Real_World_Model].filter(Boolean).join(' '),
+                Price: parseInt(v.Price) || 0,
+                Top_Speed_MPH: parseFloat(v.Top_Speed_MPH) || 0,
+                Lap_Time: v.Lap_Time || '',
+                HSW: parseBool(v.HSW),
+                Imani: parseBool(v.Imani),
+                Weaponized: parseBool(v.Weaponized),
+                Bennys: parseBool(v.Bennys),
+                Arena: parseBool(v.Arena),
+                Top_Mod_Downloads: parseInt(v.Top_Mod_Downloads) || 0,
+                image: `/vehicle_images/${make.toLowerCase()}_${model.toLowerCase().replace(/\s+/g, '_')}.png`
+              }
+            })
             setVehicles(parsed)
             setLoading(false)
           }

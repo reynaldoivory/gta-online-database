@@ -1,3 +1,5 @@
+> **Note (2026-07-18):** Historical document — describes the original scraping/auto-population toolkit as it existed early in the project. For current usage see `README.md` and `CLAUDE.md`.
+
 # GTA Online Vehicle Database - Auto-Population Toolkit
 
 ## Overview

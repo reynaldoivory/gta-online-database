@@ -33,7 +33,7 @@ vehicle-database/
 ## Quick Start
 
 ### Prerequisites
-- Node.js (v18 or higher)
+- Node.js (v20 or higher)
 - npm or yarn
 - Python 3.x (for data scripts)
 
@@ -51,7 +51,7 @@ vehicle-database/
    ```
 
 3. **Open your browser:**
-   Navigate to the URL shown in the terminal (typically `http://localhost:5173`)
+   Navigate to the URL shown in the terminal (typically `http://localhost:3000`)
 
 ### Building for Production
 
