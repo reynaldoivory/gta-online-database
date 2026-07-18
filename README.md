@@ -11,7 +11,8 @@ vehicle-database/
 ├── GTA-Vehicle-Database-App/     # React/Vite frontend application
 │   ├── src/                      # React components and application code
 │   │   ├── App.jsx              # Main application component
-│   │   └── components/          # Reusable UI components
+│   │   └── components/          # VehicleTable, FilterPanel, StatsChart,
+│   │                            #   DetailModal, ExportButton
 │   ├── public/                   # Static assets
 │   │   └── gta_vehicles_complete.csv  # Primary dataset (795 vehicles)
 │   └── package.json
@@ -51,7 +52,7 @@ vehicle-database/
    ```
 
 3. **Open your browser:**
-   Navigate to the URL shown in the terminal (typically `http://localhost:5173`)
+   The dev server opens automatically at `http://localhost:3000`
 
 ### Building for Production
 
@@ -129,11 +130,22 @@ The application uses:
 - PapaParse for efficient CSV parsing
 - Recharts for data visualization
 
-## Recent Updates (2026-04-11)
+## Tooling
 
-Project structure has been consolidated and optimized:
+- GitHub Actions CI (`.github/workflows/ci.yml`): lint, build, and CSV data validation on `master`
+- Husky pre-commit hook running lint-staged
+- Renovate for automated dependency updates
+
+## Recent Updates
+
+**2026-07** — App repaired and data restored:
+- Restored the corrected 795-vehicle master CSV and synced the app's copy
+- Fixed the app to read the pipeline CSV schema (rows previously rendered empty)
+- Accessible detail modal, RFC-4180 CSV export, error states, class chips
+- CI now triggers on `master`; root lockfile committed
+
+**2026-04-11** — Project structure consolidated:
 - Removed duplicate app directory (`app/GTA-Vehicle-App/`)
 - Consolidated Python utility scripts into `scripts/` directory
 - Updated primary dataset to 795 vehicles (previously 80 in production)
 - Removed legacy JSX assessment files
-- Updated documentation to reflect current structure

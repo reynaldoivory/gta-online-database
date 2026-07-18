@@ -4,155 +4,131 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-This is a GTA Online vehicle database — a data management toolkit (Python scripts) paired with a React/Vite frontend for browsing, filtering, and exporting vehicle data. The primary data source is CSV files that are loaded at runtime by the frontend.
+GTA Online vehicle database: a Python data pipeline (`scripts/`) that maintains a 795-vehicle
+CSV, and a single React/Vite frontend (`GTA-Vehicle-Database-App/`) that loads it at runtime
+with PapaParse. Everything runs client-side; there is no backend.
+
+The old second app (`app/GTA-Vehicle-App/`) was deleted in the 2026 cleanup. If documentation
+or scripts reference it, they are stale.
 
 ## Commands
 
-### Frontend (Active App — `app/GTA-Vehicle-App/`)
+### Frontend (`GTA-Vehicle-Database-App/`)
 
 ```bash
-# Install dependencies (first time)
-npm run install:app          # from root, OR:
-cd app/GTA-Vehicle-App && npm install
-
-# Development server (runs on http://localhost:5173)
-npm run dev                  # from root
-
-# Production build
-npm run build                # from root
-
-# Preview production build
-npm run preview              # from root
+npm run install:app     # install app dependencies (from repo root)
+npm run dev             # dev server on http://localhost:3000 (opens browser)
+npm run build           # production build -> GTA-Vehicle-Database-App/dist/
+npm run preview         # preview the production build
 ```
 
-The root `package.json` scripts all delegate to `app/GTA-Vehicle-App/`.
+All root `package.json` scripts delegate to `GTA-Vehicle-Database-App/`. There is no test
+suite and no lint script in the app (root/CI tolerate this with a fallback echo).
 
-### Python Data Scripts (`scripts/`)
+### Python data scripts (`scripts/`)
 
 ```bash
-# Scrape vehicle data from GTABase.com (~30-40 min, 2s rate limit)
 pip install requests beautifulsoup4 lxml
-python scripts/gta_vehicle_scraper.py
 
-# Merge/deduplicate CSV files (deduplicates on GTA_Model, renumbers Vehicle_ID)
-python scripts/vehicle_merger.py data/file1.csv data/file2.csv ...
+python scripts/gta_vehicle_scraper.py    # scrape GTABase (destructive: overwrites master CSV)
+python scripts/vehicle_merger.py a.csv b.csv   # merge/dedupe on GTA_Model, renumber Vehicle_ID
+python scripts/livery_vehicle_checker.py # cross-check livery JSON vs DB
+python scripts/convert_to_xlsx.py        # CSV -> Excel (run from repo root)
+python scripts/fix_data_quality.py       # targeted row fixes + livery JSON fixes; re-syncs app CSV
 
-# Interactive manual entry CLI
-python scripts/vehicle_entry_helper.py
-
-# Check which vehicles have livery options
-python scripts/livery_vehicle_checker.py
-
-# Convert database to Excel
-python scripts/convert_to_xlsx.py
+# Mod stack (run in order; NOT yet run against the current data)
+python scripts/mod_scraper.py --limit 5  # smoke test first
+python scripts/mod_scraper.py            # full run (~45-60 min, adds Top_Mod_* columns in place)
+python scripts/mod_match_report.py       # mod vs DB comparison -> data/mod_match_report.csv
 ```
 
-### Mod Stack Pipeline (run in order)
-
-```bash
-pip install requests beautifulsoup4
-
-# Step 1: Scrape top replace mod per vehicle from gta5-mods.com (~45-60 min)
-#         Adds Top_Mod_Title/Make/Model/Downloads/URL columns to main CSV.
-#         Supports --limit N for smoke tests and auto-resumes from checkpoint.
-python scripts/mod_scraper.py --limit 5   # smoke test
-python scripts/mod_scraper.py             # full run
-
-# Step 2: Compare mod community choices vs DB real-world mappings.
-#         Outputs data/mod_match_report.csv and enriches the app CSV.
-python scripts/mod_match_report.py
-```
-
-The feature-rich app (`GTA-Vehicle-Database-App/`) auto-picks up the new columns once `mod_match_report.py` has run.
+**Warning:** `gta_vehicle_scraper.py` and `wiki_api_scraper.py` overwrite
+`data/gta_vehicles_complete.csv` in place and use relative paths (run them only from where
+their `../data/` resolves into the repo). Do not run them casually — see "Data sources" below;
+the scraped sites now block non-browser clients.
 
 ## Architecture
 
-### Two React Apps (Important)
+- `App.jsx` fetches `/gta_vehicles_complete.csv` (served from
+  `GTA-Vehicle-Database-App/public/`, no `data/` subfolder) and parses it with PapaParse.
+- The Papa.parse mapper normalizes the pipeline CSV schema to the app's internal fields:
+  `Vehicle_ID→ID`, `GTA_Make→Make`, `GTA_Model→Model`,
+  `Real_World_Make + Real_World_Model → Real_World`, and booleans accept both `TRUE` and `Yes`.
+  Missing numeric fields (`Acceleration`, `Handling`) default to 0 and their UI hides itself.
+- Components: `VehicleTable` (sortable table, class chips, badges), `FilterPanel`
+  (class/shop/make dropdowns, toggles, clamped price sliders), `StatsChart` (Recharts class
+  distribution + price-vs-speed scatter), `DetailModal` (accessible dialog with stats and
+  notes), `ExportButton` (RFC-4180 CSV export).
+- The `Top_Mod_*` UI (table column, filter dropdown, modal section, export columns) is
+  **dormant**: it renders only when the data actually contains mod columns, which happens after
+  `mod_scraper.py` + `mod_match_report.py` have been run. Until then the UI hides itself.
 
-There are **two separate React apps** in this repo with different schemas and feature sets:
+## Data: SSOT and flow
 
-| App | Location | Dev Port | Features |
-|-----|----------|----------|----------|
-| Simple (active) | `app/GTA-Vehicle-App/` | 5173 | Pagination (100/page), livery filter, single-file component |
-| Feature-rich | `GTA-Vehicle-Database-App/` | 3000 | Filters panel, stats charts (Recharts), detail modal, CSV/ZIP export |
+`data/gta_vehicles_complete.csv` is the master (795 vehicles, 17 columns):
 
-The root `package.json` `dev`/`build`/`preview` scripts point to `app/GTA-Vehicle-App/`. The `GTA-Vehicle-Database-App/` is a more complete standalone version but is not wired to the root scripts.
+```
+Vehicle_ID,GTA_Make,GTA_Model,Class,Real_World_Make,Real_World_Model,Price,Drivetrain,Shop,
+Top_Speed_MPH,Lap_Time,Weaponized,HSW,Imani,Bennys,Arena,Notes
+```
 
-### Data Flow
+- `GTA-Vehicle-Database-App/public/gta_vehicles_complete.csv` is a **copy of the master** —
+  never edit it directly; edit the master and re-copy (`fix_data_quality.py` does this
+  automatically). Scripts must never treat a `public/` copy as input.
+- `data/final_database.csv` is a separate hand-curated 80-vehicle set with a different schema
+  (`ID/Make/Model/Real_World`, Yes/No booleans). Keep it; do not confuse the two.
+- `data/vehicles_with_liveries.json` lists the 41 vehicles with livery support.
 
-CSV files live in `public/data/` within each app (served as static assets). At runtime:
-1. `App.jsx` fetches `/data/gta_vehicles_complete.csv` via the browser `fetch` API
-2. PapaParse parses CSV → JavaScript objects
-3. React state manages the full dataset, with `useMemo` for filtered/sorted views
-4. No backend — everything runs client-side
+### Validation rules
 
-The `app/GTA-Vehicle-App` also loads `vehicles_with_liveries.json` from `public/data/` to show a livery filter toggle.
+- **Price**: numeric only (`2765000`); **Booleans**: `TRUE`/`FALSE` all caps
+- **Drivetrain**: `AWD`, `RWD`, `FWD`, or `N/A`; **Vehicle_ID**: zero-padded `001`–`795`
+- **Shop**: `Legendary`, `Southern`, `Warstock`, `Bennys`, `Arena`, `Reward`, `Pegasus`
 
-### Two CSV Schemas
+### Known data issues (do not "fix" without a real source)
 
-The two apps use **different column names** for the same data:
+- `Weaponized` is TRUE for 794/795 rows and `HSW` is TRUE for 757/795 — both columns are
+  junk/unpopulated. The UI suppresses their badges. `Bennys` is FALSE for every row.
+  `Imani` (20 TRUE) and `Arena` (134 TRUE) are real.
+- `Top_Speed_MPH` and `Drivetrain` are mostly empty; `Lap_Time` is populated.
+- `Class` values are plural (`Sedans`, `Coupes`, …) with some comma-joined multi-class rows
+  (`Sports,Tuners`). The frontend splits them; do not mass-rename the taxonomy without also
+  updating `classColors` (VehicleTable) and `SKIP_CLASSES` (mod_scraper).
+- `GTA_Model` is not a unique key (e.g. `Cruiser` ×5); joins should prefer `Vehicle_ID`.
 
-| `data/gta_vehicles_complete.csv` (Python scripts output) | `data/final_database.csv` (feature-rich app) |
-|---|---|
-| `Vehicle_ID`, `GTA_Make`, `GTA_Model` | `ID`, `Make`, `Model` |
-| `Real_World_Make`, `Real_World_Model` | `Real_World` (combined) |
-| Booleans: `TRUE`/`FALSE` | Booleans: `Yes`/`No` |
-| `Lap_Time`, `Bennys`, `Arena` fields | `Acceleration`, `Handling`, `Tags` fields |
+## Data sources (as of July 2026)
 
-The Python `vehicle_merger.py` outputs to the `gta_vehicles_complete.csv` schema. The `GTA-Vehicle-Database-App/App.jsx` reads using the `final_database.csv` schema (field names like `Make`, `Model`, `Real_World`).
-
-### Styling
-
-Tailwind CSS with custom component classes defined in `src/index.css`:
-- `.card` — dark frosted-glass panel
-- `.btn-primary` / `.btn-secondary` — purple/gray buttons
-- `.input-dark` / `.select-dark` — dark-themed inputs
-- `.badge`, `.badge-hsw`, `.badge-imani`, `.badge-wpn` — colored pill badges
-
-Custom Tailwind color palette under `gta.*` (dark, purple, blue, orange, green, red, gold) in `tailwind.config.js`.
-
-## Data Validation Rules
-
-When editing or generating CSV data, these rules must be followed:
-
-- **Price**: Numeric only (`2765000`, not `$2,765,000`)
-- **Booleans**: `TRUE`/`FALSE` (all caps) in `gta_vehicles_complete.csv` format; `Yes`/`No` in `final_database.csv` format
-- **Drivetrain**: `AWD`, `RWD`, `FWD`, or `N/A` (uppercase)
-- **Shop**: `Legendary`, `Southern`, `Warstock`, `Bennys`, `Arena`, `Reward`, `Pegasus` (capitalize first letter)
-- **Tags** (final_database format): semicolon-separated, e.g. `Hypercar;Classic`
-- **Vehicle_ID**: Zero-padded 3 digits (`001`–`792`); `vehicle_merger.py` auto-renumbers
-
-Valid vehicle classes: Super, Sports, Sports Classic, Muscle, Sedan, Coupe, Compact, SUV, Off-Road, Motorcycle, Plane, Helicopter, Boat, Emergency, Commercial, Industrial, Service, Military, Arena, Open Wheel, Utility, Van
-
-## Data Sources, SSOT Chain & Mod Mismatches
-
-### Primary SSOT per data type
-
-| Data | Source | Script |
+| Data | Source | Status |
 |---|---|---|
-| Vehicle list (792 vehicles) | GTABase.com | `scripts/gta_vehicle_scraper.py` |
-| Real-world car mappings | GTA Wiki Fandom API | `scripts/wiki_api_scraper.py` |
-| Mapping corrections | Manual overrides | `scripts/fix_make_model_issues.py`, `scripts/fix_empty_makes.py` |
-| Performance (speed, lap time) | Broughy1322 (embedded in GTABase pages) | `scripts/gta_vehicle_scraper.py` |
-| Top PC mod per vehicle | gta5-mods.com (highest-downloaded replace mod) | `scripts/mod_scraper.py` |
-| Mod vs DB match analysis | Derived from above two | `scripts/mod_match_report.py` |
+| Vehicle list | GTABase.com | site live, but serves HTTP 403 to non-browser clients |
+| Real-world mappings | GTA Wiki (Fandom) | same 403/bot-protection concern |
+| Performance | Broughy1322 via GTABase | Broughy still active; prefer GTACars.net or his Google Sheet |
+| Top PC mods | gta5-mods.com | 403 to non-browser clients |
 
-**Important:** `GTA-Vehicle-Database-App/public/gta_vehicles_complete.csv` is a **hand-curated 80-vehicle subset** with a different schema (`ID/Make/Model/Real_World` instead of `Vehicle_ID/GTA_Make/GTA_Model/Real_World_Make/Real_World_Model`). It is **not** auto-generated from the Python pipeline. The `mod_match_report.py` script syncs the 5 mod columns into it by matching on `GTA_Model == Model`.
+The plain `requests`+BeautifulSoup scrapers likely no longer work against these sites without
+browser-grade headers (`curl_cffi`/`cloudscraper`). Better structured alternatives:
 
-When publishing the database, credit: GTABase.com, Broughy1322, GTA Wiki (Fandom).
+- **DurtyFree/gta-v-data-dumps** (GitHub) — machine-readable `vehicles.json` per DLC; best
+  canonical vehicle list source.
+- **GTACars.net** / Broughy's master Google Sheet — structured lap time / top speed data.
+- **gta.wiki** — community mirror of the Fandom wiki, more scraper-friendly.
 
-### Why the top mod often disagrees with the DB's Real_World mapping
+Game context: GTA Online is still updated (Money Fronts 6/2025, A Safehouse in the Hills
+12/2025, The Kortz Center Heist 7/2026 — likely the final storyline DLC). GTA VI releases
+Nov 19, 2026; expect the vehicle count (~795 here, ~800+ after Kortz drip-feed) to grow slowly
+and then plateau. When publishing, credit GTABase.com, Broughy1322, and GTA Wiki (Fandom).
 
-This is expected and not a data error. Five structural reasons:
+## CI & tooling
 
-1. **Multi-inspiration design.** Most GTA cars blend 2–4 real vehicles. GTA Wiki records one primary inspiration; modders may pick a different car from the same blend (e.g., Zentorno = Lamborghini Veneno per Wiki, but Ferrari LaFerrari is the most-downloaded replace mod because it looks closer).
-2. **Community consensus drift.** Over years the community settles on a different "correct" car than what the Wiki originally noted. The DB reflects editorial Wiki accuracy; mods reflect current player preference.
-3. **Slot popularity over accuracy.** Modders choose the most desirable car that fits a slot, not the documented inspiration. The Adder slot gets Bugatti Chiron mods even though the Veyron is the official basis — because the Chiron is more current.
-4. **Many-to-one slots.** Generic tuner templates like Sultan and Elegy can fit dozens of real JDM cars. Whichever high-quality 3D model is available wins.
-5. **Add-On vs Replace distinction.** Most top-downloaded mods are Add-On (new slot) not Replace. Only Replace mods indicate which specific GTA vehicle the modder associates with a real car.
+- `.github/workflows/ci.yml` (triggers on `master`): install → lint (tolerated no-op) → build
+  (uploads `dist/` artifact) → Python validation of every `data/*.csv`.
+- Husky pre-commit runs lint-staged; Renovate manages dependency PRs.
+- Lockfiles are committed (root and app); `npm ci` depends on them.
 
-Use `data/mod_match_report.csv` (column `Suggested_DB_Update = review`) to identify high-confidence mismatches worth manual review.
+## Gotchas
 
-## Root-Level Python Scripts (Legacy)
-
-The files `create_gta_app.py`, `build_app.py`, `setup_project.py`, `master_deploy.py`, and the root-level copies of `gta_vehicle_scraper.py`, `vehicle_entry_helper.py`, `vehicle_merger.py` are older versions. Prefer the versions in `scripts/` for data work.
+- Two copies of the vehicle CSV must stay in sync (master + app public copy) — always edit the
+  master and re-run `python scripts/fix_data_quality.py` (or copy manually).
+- The price-vs-speed scatter is sparse because most `Top_Speed_MPH` values are empty.
+- Root-level `build_app.py`, `create_gta_app.py`, `master_deploy.py`, `setup_project.py` are
+  legacy one-shot generators — do not use them for data work.
