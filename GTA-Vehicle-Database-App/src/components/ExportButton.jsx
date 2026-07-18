@@ -50,7 +50,7 @@ export default function ExportButton({ vehicles }) {
             const filename = `${v.Make?.toLowerCase()}_${v.Model?.toLowerCase().replace(/\s+/g, '_')}.png`
             imgFolder.file(filename, blob)
           }
-        } catch (e) {
+        } catch {
           // Skip failed images
         }
       }

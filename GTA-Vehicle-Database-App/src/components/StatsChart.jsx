@@ -1,7 +1,26 @@
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, ScatterChart, Scatter, CartesianGrid, Legend } from 'recharts'
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, ScatterChart, Scatter, CartesianGrid } from 'recharts'
 import { useState } from 'react'
 
 const COLORS = ['#9b4dca', '#3b82f6', '#f97316', '#eab308', '#22c55e', '#ef4444', '#06b6d4', '#8b5cf6', '#ec4899', '#14b8a6', '#f43f5e', '#6366f1']
+
+// Module-scoped so it isn't recreated on every StatsChart render (recharts
+// injects `active`/`payload`; it closes over nothing in the parent).
+const CustomTooltip = ({ active, payload }) => {
+  if (!active || !payload?.length) return null
+  const d = payload[0].payload
+  return (
+    <div className="bg-gray-900 border border-gray-700 rounded-lg p-3 shadow-xl">
+      <p className="text-white font-medium">{d.name}</p>
+      {d.count !== undefined && <p className="text-purple-400">{d.count} vehicles</p>}
+      {d.price !== undefined && (
+        <>
+          <p className="text-green-400">Price: ${d.price.toFixed(2)}M</p>
+          <p className="text-blue-400">Speed: {d.speed} mph</p>
+        </>
+      )}
+    </div>
+  )
+}
 
 export default function StatsChart({ vehicles }) {
   const [chartType, setChartType] = useState('class')
@@ -23,23 +42,6 @@ export default function StatsChart({ vehicles }) {
       speed: v.Top_Speed_MPH,
       class: v.Class
     }))
-
-  const CustomTooltip = ({ active, payload }) => {
-    if (!active || !payload?.length) return null
-    const d = payload[0].payload
-    return (
-      <div className="bg-gray-900 border border-gray-700 rounded-lg p-3 shadow-xl">
-        <p className="text-white font-medium">{d.name}</p>
-        {d.count !== undefined && <p className="text-purple-400">{d.count} vehicles</p>}
-        {d.price !== undefined && (
-          <>
-            <p className="text-green-400">Price: ${d.price.toFixed(2)}M</p>
-            <p className="text-blue-400">Speed: {d.speed} mph</p>
-          </>
-        )}
-      </div>
-    )
-  }
 
   return (
     <div>

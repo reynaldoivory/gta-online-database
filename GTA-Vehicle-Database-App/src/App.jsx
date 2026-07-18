@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
 import Papa from 'papaparse'
-import { Search, Filter, BarChart3, Download, Car, X } from 'lucide-react'
+import { Search, Filter, BarChart3, Car, X } from 'lucide-react'
 import VehicleTable from './components/VehicleTable'
 import FilterPanel from './components/FilterPanel'
 import StatsChart from './components/StatsChart'

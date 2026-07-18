@@ -8,7 +8,7 @@
     "build": "cd GTA-Vehicle-Database-App && npm run build",
     "preview": "cd GTA-Vehicle-Database-App && npm run preview",
     "install:app": "cd GTA-Vehicle-Database-App && npm install",
-    "lint": "cd GTA-Vehicle-Database-App && npm run lint || echo 'Linting skipped - no lint script'",
+    "lint": "cd GTA-Vehicle-Database-App && npm run lint",
     "prepare": "husky"
   },
   "lint-staged": {

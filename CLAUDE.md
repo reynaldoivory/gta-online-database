@@ -24,7 +24,14 @@ npm install        # first time — the app is not part of any npm workspace
 npm run dev        # Vite dev server on http://localhost:3000 (vite.config.js)
 npm run build      # production build → dist/
 npm run preview    # serve the production build
+npm run lint       # ESLint 9 flat config — 0 errors (2 complexity warnings tolerated)
 ```
+
+ESLint (`eslint.config.js`, flat config) covers `src/**` (React 18 JSX,
+browser globals, react-hooks + react-refresh + jsx-uses-vars) and the
+`*.config.js` files (Node globals). It is a **hard CI gate** — keep it at 0
+errors. Inner components must be declared at module scope, not inside render
+(`react-hooks/static-components`).
 
 The root `package.json` scripts (`npm run dev` / `build` / `preview` /
 `install:app` from the repo root) just `cd GTA-Vehicle-Database-App` and run
@@ -78,7 +85,10 @@ Tailwind CSS 3 with custom component classes in `src/index.css` (`.card`,
 
 Triggers on push/PR to `master`. Jobs: install → lint → build (uploads
 `dist/` artifact), plus a data-validation job that loads every `data/*.csv`
-with pandas on Python 3.11 (empty-file, column, and duplicate checks).
+with pandas on Python 3.11 (empty-file, column, and duplicate checks). The
+lint job runs the app's ESLint and now **fails** on lint errors (previously a
+`|| echo` swallowed them — harmless when no lint script existed, a gap once
+one does).
 Renovate manages dependency updates (`renovate.json`).
 
 ## Conventions

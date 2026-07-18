@@ -44,7 +44,7 @@ jobs:
         run: npm ci && cd GTA-Vehicle-Database-App && npm ci
 
       - name: Run linter
-        run: cd GTA-Vehicle-Database-App && npm run lint || echo "No lint script configured"
+        run: cd GTA-Vehicle-Database-App && npm run lint
 
   build:
     name: Build

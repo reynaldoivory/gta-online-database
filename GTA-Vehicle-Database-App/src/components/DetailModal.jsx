@@ -1,6 +1,26 @@
 import { X, Gauge, Timer, DollarSign, Car, Store, Info, ExternalLink } from 'lucide-react'
 import { useState } from 'react'
 
+// Module-scoped so it isn't recreated on every DetailModal render; it reads
+// only its own props (nothing from the parent's scope).
+const StatBar = ({ label, value, max, color, icon: Icon }) => (
+  <div className="mb-3">
+    <div className="flex items-center justify-between mb-1">
+      <span className="text-gray-400 text-sm flex items-center gap-2">
+        <Icon className="w-4 h-4" />
+        {label}
+      </span>
+      <span className="text-white font-medium">{value}</span>
+    </div>
+    <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
+      <div
+        className={`h-full rounded-full ${color}`}
+        style={{ width: `${Math.min((parseFloat(value) / max) * 100, 100)}%` }}
+      />
+    </div>
+  </div>
+)
+
 export default function DetailModal({ vehicle, onClose }) {
   const [imgError, setImgError] = useState(false)
   const v = vehicle
@@ -9,24 +29,6 @@ export default function DetailModal({ vehicle, onClose }) {
     if (price === 0) return 'Free'
     return `$${price.toLocaleString()}`
   }
-
-  const StatBar = ({ label, value, max, color, icon: Icon }) => (
-    <div className="mb-3">
-      <div className="flex items-center justify-between mb-1">
-        <span className="text-gray-400 text-sm flex items-center gap-2">
-          <Icon className="w-4 h-4" />
-          {label}
-        </span>
-        <span className="text-white font-medium">{value}</span>
-      </div>
-      <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
-        <div 
-          className={`h-full rounded-full ${color}`}
-          style={{ width: `${Math.min((parseFloat(value) / max) * 100, 100)}%` }}
-        />
-      </div>
-    </div>
-  )
 
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={onClose}>
